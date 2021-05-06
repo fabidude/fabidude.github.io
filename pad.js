@@ -1,3 +1,6 @@
+/**
+ * @author Fabian Braun <fabian.braun@haw-hamburg.de>
+ */
 import * as THREE from '/js/build/three.module.js';
 import { OrbitControls } from '/js/examples/jsm/controls/OrbitControls.js';
 // import { alerttest } from "/testMe.js";
@@ -5,6 +8,7 @@ import { OrbitControls } from '/js/examples/jsm/controls/OrbitControls.js';
 let  camera, scene, renderer, sphere, currentColor = '0xffffff';
 let conf = { color : '#ff0000', p : 0, a : 0, d : 0}; 
 let farbsystem_element = document.getElementById("Farbsystem");
+let texts = [];
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 
 init();
@@ -32,6 +36,7 @@ function createCamera() {
     camera.position.z = 45;
     scene.add( camera );
 }
+
 function addControls() {
     const controls = new OrbitControls( camera, renderer.domElement );
     controls.addEventListener( 'change', render );
@@ -181,7 +186,17 @@ function addTexts() {
         const textSad = new THREE.Mesh(textGeometrySad, lineMaterial);
         textSad.position.set(8, -10, -10)
         scene.add(textSad);
+
+        texts.push(textPlusD, textMinusD, textPlusA, textMinusA, textPlusP, textMinusP);
+        texts.push(textHappy, textContent, textCaredFor, textDespicable, textAngry, textSad, textSurprised, textSuspicious);
     } );
+}
+function updateTexts() {
+    texts.forEach(looky);
+
+    function looky(item) {
+        item.lookAt( camera.position );
+    }
 }
 function addSphere() {
     const sphereGeometry = new THREE.SphereGeometry(2/3, 2**6, 2**6);
@@ -209,6 +224,7 @@ function resetScene() {
     render();
 }
 function render() {
+    updateTexts();
     renderer.render( scene, camera );
 }
 function init() {
@@ -366,6 +382,16 @@ function setValues() {
             currentColor = rgbToHex(xyzToRgb(labToXyz([L, a, b])));
             addSphere();
             render();
+
+        } else if (selectedFarbsystem == "Cie-Lch") {
+            console.log("Modus: LCh");
+
+            //TODO
+
+        } else if (selectedFarbsystem == "Cie-Luv") {
+            console.log("Modus: L*u*v*");
+
+            //TODO
 
         } else if (selectedFarbsystem =="RGB") {
             console.log("Modus: RGB");
