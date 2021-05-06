@@ -1,5 +1,6 @@
 import * as THREE from '/js/build/three.module.js';
 import { OrbitControls } from '/js/examples/jsm/controls/OrbitControls.js';
+// import { alerttest } from "/testMe.js";
 
 let  camera, scene, renderer, sphere, currentColor = '0xffffff';
 let conf = { color : '#ff0000', p : 0, a : 0, d : 0}; 
@@ -14,6 +15,7 @@ function createRenderer() {
     renderer.setSize( window.innerWidth - (window.innerWidth / 16), window.innerHeight - (window.innerHeight / 16) );
     document.body.appendChild( renderer.domElement );
 }
+
 function createScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xffffff );
@@ -220,6 +222,7 @@ function init() {
     addControls();
     addListener();   
     
+    
     window.addEventListener( 'resize', onWindowResize );
     render();
 }
@@ -318,6 +321,11 @@ function setValues() {
             };
 
         return true;
+
+        } else if (selectedFarbsystem == "Cie-Luv") {
+            // TODO
+        } else if (selectedFarbsystem == "Cie-Lch") {
+            // TODO
         };
     };
 
@@ -400,7 +408,19 @@ function changeSelectText() {
         document.getElementById("y_input").placeholder = "G";
         document.getElementById("z_input").placeholder = "B";
         
-    }
+    } else if (document.getElementById("Farbsystem").value == "Cie-Luv") {
+
+        document.getElementById("x_input").placeholder = "L*";
+        document.getElementById("y_input").placeholder = "u*";
+        document.getElementById("z_input").placeholder = "v*";
+        
+    } else if (document.getElementById("Farbsystem").value == "Cie-Lch") {
+
+        document.getElementById("x_input").placeholder = "L";
+        document.getElementById("y_input").placeholder = "C";
+        document.getElementById("z_input").placeholder = "h";
+        
+    };
 }
 /** https://en.wikipedia.org/wiki/SRGB#The_sRGB_transfer_function_.28.22gamma.22.29
  *  Umwandlung von XYZ nach RGB, skaliert mit 255
@@ -485,6 +505,37 @@ function labToXyz(lab) {
     const Z = Zn * fInv(((L + 16) / 116) - (b / 200)) + 0;
 
     console.log("XYZ: " + X,Y,Z);
+
+    // xyzToRgb() erwartet Werte zwischen 0 und 1, daher durch 100 dividiert
+    return [X / 100, Y / 100, Z / 100];
+}
+function LuvToXyz(Luv) {
+    const L = Luv[0];
+    const u = Luv[1];
+    const v = Luv[2];
+    console.log("Luv: " + L, u, v);
+    
+    const Xn = 94.811;
+    const Yn = 100;
+    const Zn = 107.304;
+
+    /* "The quantities u′n and v′n are the (u′, v′) chromaticity coordinates of a "specified white object" – 
+    which may be termed the white point – and Yn is its luminance. In reflection mode, this is often (but not always) 
+    taken as the (u′, v′) of the perfect reflecting diffuser under that illuminant. (For example, 
+    for the 2° observer and standard illuminant C, u′n = 0.2009, v′n = 0.4610.)"
+
+    -- https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation */
+    const v_Hyphen_n = parsefloat(0.4610);
+    const u_Hyphen_n = parsefloat(0.2009);
+
+    // https://wikimedia.org/api/rest_v1/media/math/render/svg/5e341dbff4b5e424b13992dd449fca64a34950eb
+    const u_Hyphen = (u / (13 * L )) + u_Hyphen_n;
+    const v_Hyphen = (v / (13 * L )) + v_Hyphen_n;
+
+    const Y = function Y () {
+        return (L <= 8) ? Yn * L * Math.pow(3/29, 3) : Yn * Math.pow(((L + 16) / 116), 3);};
+    const X = Y * ((9 * u_Hyphen) / (4 * u_Hyphen));
+    const Z = Y * ((12 - 3 * u_Hyphen - 20 * v_Hyphen) / 4 * v_Hyphen);
 
     // xyzToRgb() erwartet Werte zwischen 0 und 1, daher durch 100 dividiert
     return [X / 100, Y / 100, Z / 100];
