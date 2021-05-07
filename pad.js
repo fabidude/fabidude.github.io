@@ -3,12 +3,10 @@
  */
 import * as THREE from '/js/build/three.module.js';
 import { OrbitControls } from '/js/examples/jsm/controls/OrbitControls.js';
-// import { alerttest } from "/testMe.js";
 
-let  camera, scene, renderer, sphere, currentColor = '0xffffff';
+let  camera, scene, renderer, sphere, currentColor = '0xffffff', texts = [];
 let conf = { color : '#ff0000', p : 0, a : 0, d : 0}; 
 let farbsystem_element = document.getElementById("Farbsystem");
-let texts = [];
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 
 init();
@@ -340,8 +338,10 @@ function setValues() {
 
         } else if (selectedFarbsystem == "Cie-Luv") {
             // TODO
+            return true;
         } else if (selectedFarbsystem == "Cie-Lch") {
             // TODO
+            return true;
         };
     };
 
@@ -385,13 +385,30 @@ function setValues() {
 
         } else if (selectedFarbsystem == "Cie-Lch") {
             console.log("Modus: LCh");
+            let L = parseFloat(x_element_value);
+            let c = parseFloat(y_element_value);
+            let h = parseFloat(z_element_value);
+            conf.p = p_element_value;
+            conf.a = a_element_value;
+            conf.d = d_element_value;
 
-            //TODO
-
+            currentColor = rgbToHex(xyzToRgb(labToXyz(LchToLab([L,c,h]))));
+            addSphere();
+            render();
         } else if (selectedFarbsystem == "Cie-Luv") {
+            //TODO
             console.log("Modus: L*u*v*");
 
-            //TODO
+            let L = parseFloat(x_element_value);
+            let u = parseFloat(y_element_value);
+            let v = parseFloat(z_element_value);
+            conf.p = p_element_value;
+            conf.a = a_element_value;
+            conf.d = d_element_value;
+
+            currentColor = rgbToHex(xyzToRgb(LuvToXyz([L,u,v])));
+            addSphere();
+            render();            
 
         } else if (selectedFarbsystem =="RGB") {
             console.log("Modus: RGB");
@@ -444,7 +461,7 @@ function changeSelectText() {
 
         document.getElementById("x_input").placeholder = "L";
         document.getElementById("y_input").placeholder = "C";
-        document.getElementById("z_input").placeholder = "h";
+        document.getElementById("z_input").placeholder = "H";
         
     };
 }
@@ -456,7 +473,7 @@ function xyzToRgb(xyz) {
     const y = xyz[1];
     const z = xyz[2];
     
-    console.log("XYZ skaliert: " + x,y,z);
+    console.log("XYZ: " + x,y,z);
     
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/55840a61bb3e5b31469856346b5f66ce607fd9e3
     let R = 3.2406254773200533 * x - 1.5372079722103187 * y - 0.4986285986982479 * z;
@@ -539,11 +556,9 @@ function LuvToXyz(Luv) {
     const L = Luv[0];
     const u = Luv[1];
     const v = Luv[2];
-    console.log("Luv: " + L, u, v);
-    
-    const Xn = 94.811;
     const Yn = 100;
-    const Zn = 107.304;
+
+    console.log("Luv: " + L, u, v);
 
     /* "The quantities u′n and v′n are the (u′, v′) chromaticity coordinates of a "specified white object" – 
     which may be termed the white point – and Yn is its luminance. In reflection mode, this is often (but not always) 
@@ -551,18 +566,33 @@ function LuvToXyz(Luv) {
     for the 2° observer and standard illuminant C, u′n = 0.2009, v′n = 0.4610.)"
 
     -- https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation */
-    const v_Hyphen_n = parsefloat(0.4610);
-    const u_Hyphen_n = parsefloat(0.2009);
+    const v_Hyphen_n = 0.4610;
+    const u_Hyphen_n = 0.2009;
 
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/5e341dbff4b5e424b13992dd449fca64a34950eb
     const u_Hyphen = (u / (13 * L )) + u_Hyphen_n;
     const v_Hyphen = (v / (13 * L )) + v_Hyphen_n;
 
-    const Y = function Y () {
-        return (L <= 8) ? Yn * L * Math.pow(3/29, 3) : Yn * Math.pow(((L + 16) / 116), 3);};
+    function calculateY () {
+        return (L <= 8) ? Yn * L * Math.pow(3/29, 3) : Yn * Math.pow(((L + 16) / 116), 3);
+    };
+
+    const Y = calculateY();
     const X = Y * ((9 * u_Hyphen) / (4 * u_Hyphen));
     const Z = Y * ((12 - 3 * u_Hyphen - 20 * v_Hyphen) / 4 * v_Hyphen);
 
     // xyzToRgb() erwartet Werte zwischen 0 und 1, daher durch 100 dividiert
     return [X / 100, Y / 100, Z / 100];
+}
+function LchToLab(Lch) {
+    const L = Luv[0];
+    const c = Luv[1];
+    const h = Luv[2];
+
+    console.log("LCH: " + L, c, h);
+
+    const a = c * Math.cos(h / 180 * Math.PI);
+    const b = c * Math.sin(h / 180 * Math.PI);
+
+    return [L, a, b];
 }
