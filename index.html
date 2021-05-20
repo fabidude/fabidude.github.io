@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html lang="de">
-	<head>
-		<title>PAD - Fabian Braun</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="main.css">
-	</head>
-	<body>
-		<script type="module" src="pad.js"></script>
-		<div id="container">
-			<form>
-				<input type="number" id="x_input" placeholder="R" name="x_input">
-				<input type="number" id="y_input" placeholder="G" name="y_input">
-				<input type="number" id="z_input" placeholder="B" name="z_input">
 
-				<select name="Farbsystem" id="Farbsystem">
-					<option value="RGB">RGB</option>
-					<option value="Cie-XYZ">XYZ</option>
-					<option value="Cie-Lab">L*a*b*</option>
-					<option value="Cie-Luv">L*u*v*</option>
-					<option value="Cie-Lch">LCH</option>
-				</select>
-					<br>
+<head>
+    <title>PAD - Fabian Braun</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <!-- <link type="text/css" rel="stylesheet" href="main.css"> -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/bootstrap.bundle.js"></script>
 
-				<input type="number" id="p_input" name="p_input" placeholder="Pleasure" min="-1" max="1">
-				<input type="number" id="a_input" name="a_input" placeholder="Arousal" min="-1" max="1">
-				<input type="number" id="d_input" name="d_input" placeholder="Dominance" min="-1" max="1">
+</head>
 
-				<button type="button" id="submit_button" name="submit_button" >
-					Hinzufügen
-				</button>
-				<br>
-				<br>
+<body>
+    <div>
+        <script type="module" src="pad.js"></script>
+        <div class="input-group" style="justify-content: center;">
 
-				<button type="button" id="values_reset_button" name="values_reset_button">
-					Werte zurücksetzen
-				</button>
+            <input style="width: 8em;" type="number" id="x_input" placeholder="R" name="x_input">
+            <input style="width: 8em;" type="number" id="y_input" placeholder="G" name="y_input">
+            <input style="width: 8em;" type="number" id="z_input" placeholder="B" name="z_input">
 
-				<button type="button" id="scene_reset_button" name="scene_reset_button">
-					Szene zurücksetzen
-				</button>
-				<input type="button" onclick="location.href='/doku.pdf';" value="Dokumentation" />
+            <select style="width: 8em;" class="btn btn-secondary dropdown-toggle" name="Farbsystem" id="Farbsystem">
+				<option value="RGB">RGB</option>
+				<option value="Cie-XYZ">XYZ</option>
+				<option value="Cie-Lab">L*a*b*</option>
+				<option value="Cie-Luv">L*u*v*</option>
+				<option value="Cie-Lch">LCH</option>
+			</select>
 
-			</form>
-		</div>
-		
-    </body>
+        </div>
+
+        <div class="input-group" style=" justify-content: center;">
+            <input style="width: 8em;" type="number" id="p_input" name="p_input" placeholder="Pleasure">
+            <input style="width: 8em;" type="number" id="a_input" name="a_input" placeholder="Arousal">
+            <input style="width: 8em;" type="number" id="d_input" name="d_input" placeholder="Dominance">
+
+            <button style="width: 8em;" type="button" id="submit_button" name="submit_button" class="btn btn-secondary">Hinzufügen</button>
+        </div>
+
+        <div class="input-group" style=" justify-content: center;">
+            <button style="width: 10.6em;" type="button" id="values_reset_button" name="values_reset_button" class="btn btn-secondary">Werte zurücksetzen</button>
+            <button style="width: 10.6em;" type="button" id="scene_reset_button" name="scene_reset_button" class="btn btn-secondary">Szene zurücksetzen</button>
+            <button style="width: 10.6em;" type="button" onclick="location.href='/doku.pdf';" value="Dokumentation" class="btn btn-secondary">Dokumentation</button>
+        </div>
+    </div>
+
+</body>
+
 </html>
