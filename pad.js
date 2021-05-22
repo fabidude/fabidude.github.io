@@ -271,6 +271,9 @@ function resetValues() {
     document.getElementById("y_input").value = "";
     document.getElementById("z_input").value = "";
 }
+function clearConsole() {
+    console.clear();
+}
 
 function setValues() {
     let selectedFarbsystem = farbsystem_element.options[farbsystem_element.selectedIndex].value;
@@ -374,7 +377,7 @@ function setValues() {
             // Umwandlung in Float, weil es sonst ein String wäre
             let x = parseFloat(x_element_value);
             let y = parseFloat(y_element_value);
-            let z = parseFloat(1 - x - y);
+            let z = parseFloat(z_element_value);
 
             conf.p = p_element_value;
             conf.a = a_element_value;
@@ -494,11 +497,9 @@ function xyzToRgb(xyz) {
     console.log("XYZ: " + x, y, z);
 
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/55840a61bb3e5b31469856346b5f66ce607fd9e3
-    let R = 3.2406254773200533 * x - 1.5372079722103187 * y - 0.4986285986982479 * z;
-    let G = -0.9689307147293197 * x + 1.8757560608852415 * y + 0.041517523842953964 * z;
-    let B = 0.055710120445510616 * x - 0.2040210505984867 * y + 1.0569959422543882 * z;
-
-    console.log("RGB vor gamma: " + R, G, B);
+    let R = 3.2406 * x - 1.5372 * y - 0.4986 * z;
+    let G = -0.9689 * x + 1.8758 * y + 0.0415 * z;
+    let B = 0.0557 * x - 0.204 * y + 1.057 * z;
 
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/e1bbfd34a4c7dcf597660faea9f330d5494c429e
     function gamma(t) {
@@ -508,8 +509,6 @@ function xyzToRgb(xyz) {
     R = gamma(R);
     G = gamma(G);
     B = gamma(B);
-
-    console.log("RGB nach gamma: " + R * 255, G * 255, B * 255);
 
     return [R * 255, G * 255, B * 255];
 }
@@ -530,6 +529,8 @@ function rgbToHex(rgb) {
     if (g > 255) { g = 255 };
     if (b < 0) { b = 0 };
     if (b > 255) { b = 255 };
+
+    console.log("RGB korrigiert: " + r, g, b);
 
     // Umwandlung in Hex
     function hexChar(c) {
@@ -580,35 +581,33 @@ function LuvToXyz(Luv) {
 
     console.log("Luv: " + L, u, v);
 
-    /* "The quantities u′n and v′n are the (u′, v′) chromaticity coordinates of a "specified white object" – 
-    which may be termed the white point – and Yn is its luminance. In reflection mode, this is often (but not always) 
-    taken as the (u′, v′) of the perfect reflecting diffuser under that illuminant. (For example, 
-    for the 2° observer and standard illuminant C, u′n = 0.2009, v′n = 0.4610.)"
-
+    /* "For example, for the 2° observer and standard illuminant C, u′n = 0.2009, v′n = 0.4610."
     -- https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation */
-    const v_Hyphen_n = 0.4610;
-    const u_Hyphen_n = 0.2009;
+    const v_hyphen_n = 0.4610;
+    const u_hyphen_n = 0.2009;
 
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/5e341dbff4b5e424b13992dd449fca64a34950eb
-    const u_Hyphen = (u / (13 * L)) + u_Hyphen_n;
-    const v_Hyphen = (v / (13 * L)) + v_Hyphen_n;
+    const u_hyphen = (u / (13 * L)) + u_hyphen_n;
+    const v_hyphen = (v / (13 * L)) + v_hyphen_n;
 
     function calculateY() {
-        return (L <= 8) ? Yn * L * Math.pow(3 / 29, 3) : Yn * Math.pow(((L + 16) / 116), 3);
+        return (L <= 8) ? Yn * L * Math.pow((3 / 29), 3) : Yn * Math.pow(((L + 16) / 116), 3);
     };
 
     const Y = calculateY();
-    const X = Y * ((9 * u_Hyphen) / (4 * u_Hyphen));
-    const Z = Y * ((12 - 3 * u_Hyphen - 20 * v_Hyphen) / 4 * v_Hyphen);
+    const X = Y * ((9 * u_hyphen) / (4 * v_hyphen));
+    const Z = Y * ((12 - (3 * u_hyphen) - (20 * v_hyphen)) / (4 * v_hyphen));
+
+    // console.log("XYZ in LUV(): " + Y,X,Z)
 
     // xyzToRgb() erwartet Werte zwischen 0 und 1, daher durch 100 dividiert
     return [X / 100, Y / 100, Z / 100];
 }
 
 function LchToLab(Lch) {
-    const L = Luv[0];
-    const c = Luv[1];
-    const h = Luv[2];
+    const L = Lch[0];
+    const c = Lch[1];
+    const h = Lch[2];
 
     console.log("LCH: " + L, c, h);
 

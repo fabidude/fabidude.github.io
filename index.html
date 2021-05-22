@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <div id="container">
+    <div id="container" style="border-bottom: 10px;">
         <script type="module" src="pad.js"></script>
         <div class="input-group" style="justify-content: center;">
 
@@ -22,7 +22,7 @@
 
             <select style="width: 8em;" class="btn btn-secondary dropdown-toggle" name="Farbsystem" id="Farbsystem">
 				<option value="RGB">RGB</option>
-				<option value="Cie-XYZ">XYZ</option>
+				<option value="Cie-XYZ">XYZ (D65/2°)</option>
 				<option value="Cie-Lab">L*a*b*</option>
 				<option value="Cie-Luv">L*u*v*</option>
 				<option value="Cie-Lch">LCH</option>
@@ -41,7 +41,7 @@
         <div class="input-group" style=" justify-content: center;">
             <button style="width: 10.6em;" type="button" id="values_reset_button" name="values_reset_button" class="btn btn-secondary">Werte zurücksetzen</button>
             <button style="width: 10.6em;" type="button" id="scene_reset_button" name="scene_reset_button" class="btn btn-secondary">Szene zurücksetzen</button>
-            <button style="width: 10.6em;" type="button" onclick="location.href='/doku.pdf';" value="Dokumentation" class="btn btn-secondary">Dokumentation</button>
+            <button disabled style="width: 10.6em;" type="button" onclick="location.href='/doku.pdf';" value="Dokumentation" class="btn btn-secondary">Dokumentation</button>
         </div>
     </div>
 
