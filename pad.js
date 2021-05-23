@@ -191,7 +191,6 @@ function addTexts() {
         textSad.position.set(8, -10, -10)
         scene.add(textSad);
 
-        updateTexts();
         render();
 
         texts.push(textPlusD, textMinusD, textPlusA, textMinusA, textPlusP, textMinusP);
@@ -249,9 +248,9 @@ function init() {
     createGrid();
     createMiddleLine();
     addTexts();
+    updateTexts();
     addControls();
     addListener();
-
 
     window.addEventListener('resize', onWindowResize);
     render();

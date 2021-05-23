@@ -1,3 +1,0 @@
--Weitere Farbsystemkonvertierung
--Überarbeitete UI (Bootstrap, Angular, Thymeleaf)
--Beschriftungen verbessern (Drehen sich automatisch zur Kamera)
