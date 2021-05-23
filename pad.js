@@ -191,6 +191,9 @@ function addTexts() {
         textSad.position.set(8, -10, -10)
         scene.add(textSad);
 
+        updateTexts();
+        render();
+
         texts.push(textPlusD, textMinusD, textPlusA, textMinusA, textPlusP, textMinusP);
         texts.push(textHappy, textContent, textCaredFor, textDespicable, textAngry, textSad, textSurprised, textSuspicious);
     });
@@ -271,10 +274,6 @@ function resetValues() {
     document.getElementById("y_input").value = "";
     document.getElementById("z_input").value = "";
 }
-function clearConsole() {
-    console.clear();
-}
-
 function setValues() {
     let selectedFarbsystem = farbsystem_element.options[farbsystem_element.selectedIndex].value;
 
