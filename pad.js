@@ -4,9 +4,8 @@
 import * as THREE from '/js/build/three.module.js';
 import { OrbitControls } from '/js/examples/jsm/controls/OrbitControls.js';
 
-let camera, grid, scene, renderer, sphere, currentColor = '0xffffff',
-    texts = [];
-let conf = { color: '#ff0000', p: 0, a: 0, d: 0 };
+let camera, grid, scene, renderer, sphere, currentColor = '0xffffff', texts = [], showEmotions = true;
+let p = 0, a = 0, d = 0;
 let farbsystem_element = document.getElementById("Farbsystem");
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 
@@ -48,10 +47,112 @@ function createGrid() {
     grid = new THREE.GridHelper(20, 20, 0x000000, 0x555555);
     scene.add(grid);
 }
+/* Erstellt 12 separate Linien. Könnte man bestimmt eleganter lösen, funktioniert aber. */
+function createSurroundingGrid() {
+    
+    const points = [];
+
+    points.push(new THREE.Vector3(10, 10, 10));
+    points.push(new THREE.Vector3(10, -10, 10));
+    let lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    let line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, 10, -10));
+    points.push(new THREE.Vector3(10, 10, -10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, 10, 10));
+    points.push(new THREE.Vector3(10, 10, 10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, 10, 10));
+    points.push(new THREE.Vector3(-10, -10, 10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+    
+    points.push(new THREE.Vector3(-10, -10, 10));
+    points.push(new THREE.Vector3(10, -10, 10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(10, -10, 10));
+    points.push(new THREE.Vector3(10, -10, -10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(10, 10, -10));
+    points.push(new THREE.Vector3(10, -10, -10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(10, 10, -10));
+    points.push(new THREE.Vector3(10, 10, 10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, 10, -10));
+    points.push(new THREE.Vector3(-10, 10, 10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, 10, -10));
+    points.push(new THREE.Vector3(-10, -10, -10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, -10, -10));
+    points.push(new THREE.Vector3(-10, -10, 10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+    points.push(new THREE.Vector3(-10, -10, -10));
+    points.push(new THREE.Vector3(10, -10, -10));
+    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+    line = new THREE.Line(lineGeometry, lineMaterial);
+    scene.add(line);
+    points.pop();
+    points.pop();
+
+}
 
 function createMiddleLine() {
     const points = [];
-    points.push(new THREE.Vector3(0, 0, 0));
+    // points.push(new THREE.Vector3(0, 0, 0));
     points.push(new THREE.Vector3(0, 10, 0));
     points.push(new THREE.Vector3(0, -10, 0));
 
@@ -119,6 +220,7 @@ function addTexts() {
         textPlusP.position.set(0, 10, 0)
         scene.add(textPlusP);
 
+
         const textGeometryHappy = new THREE.TextGeometry('Glücklich', {
             font: font,
             size: .50,
@@ -126,6 +228,7 @@ function addTexts() {
         });
         const textHappy = new THREE.Mesh(textGeometryHappy, lineMaterial);
         textHappy.position.set(-10, 10, 10)
+        textHappy.name = "textHappy";
         scene.add(textHappy);
 
         const textGeometryContent = new THREE.TextGeometry('Zufrieden', {
@@ -135,6 +238,7 @@ function addTexts() {
         });
         const textContent = new THREE.Mesh(textGeometryContent, lineMaterial);
         textContent.position.set(8, 10, 10)
+        textContent.name = "textContent";
         scene.add(textContent);
 
         const textGeometryAngry = new THREE.TextGeometry('Wütend', {
@@ -144,6 +248,7 @@ function addTexts() {
         });
         const textAngry = new THREE.Mesh(textGeometryAngry, lineMaterial);
         textAngry.position.set(-10, -10, 10)
+        textAngry.name = "textAngry";
         scene.add(textAngry);
 
         const textGeometryDespicable = new THREE.TextGeometry('Verächtlich', {
@@ -153,6 +258,7 @@ function addTexts() {
         });
         const textDespicable = new THREE.Mesh(textGeometryDespicable, lineMaterial);
         textDespicable.position.set(8, -10, 10)
+        textDespicable.name = "textDespicable";
         scene.add(textDespicable);
 
         const textGeometrySurprised = new THREE.TextGeometry('Erstaunt', {
@@ -162,6 +268,7 @@ function addTexts() {
         });
         const textSurprised = new THREE.Mesh(textGeometrySurprised, lineMaterial);
         textSurprised.position.set(-10, 10, -10)
+        textSurprised.name = "textSurprised";
         scene.add(textSurprised);
 
         const textGeometryCaredFor = new THREE.TextGeometry('Umsorgt', {
@@ -171,6 +278,7 @@ function addTexts() {
         });
         const textCaredFor = new THREE.Mesh(textGeometryCaredFor, lineMaterial);
         textCaredFor.position.set(8, 10, -10)
+        textCaredFor.name = "textCaredFor";
         scene.add(textCaredFor);
 
         const textGeometrySuspicious = new THREE.TextGeometry('Misstrauisch', {
@@ -180,6 +288,7 @@ function addTexts() {
         });
         const textSuspicious = new THREE.Mesh(textGeometrySuspicious, lineMaterial);
         textSuspicious.position.set(-10, -10, -10)
+        textSuspicious.name = "textSuspicious";
         scene.add(textSuspicious);
 
         const textGeometrySad = new THREE.TextGeometry('Traurig', {
@@ -189,12 +298,17 @@ function addTexts() {
         });
         const textSad = new THREE.Mesh(textGeometrySad, lineMaterial);
         textSad.position.set(8, -10, -10)
+        textSad.name = "textSad";
         scene.add(textSad);
 
+        
+        texts.push(textPlusD, textMinusD, textPlusA, textMinusA, textPlusP, textMinusP);
+        if (showEmotions) {
+            texts.push(textHappy, textContent, textCaredFor, textDespicable, textAngry, textSad, textSurprised, textSuspicious);
+        }
+        
         render();
 
-        texts.push(textPlusD, textMinusD, textPlusA, textMinusA, textPlusP, textMinusP);
-        texts.push(textHappy, textContent, textCaredFor, textDespicable, textAngry, textSad, textSurprised, textSuspicious);
     });
 }
 
@@ -211,7 +325,7 @@ function addSphere() {
     const spehereMaterial = new THREE.MeshBasicMaterial({ color: currentColor });
     const newSphere = new THREE.Mesh(sphereGeometry, spehereMaterial);
     sphere = newSphere;
-    sphere.position.set(conf.p * 10, conf.a * 10, conf.d * 10);
+    sphere.position.set(-a * 10, p * 10, d * 10);
     scene.add(sphere);
 }
 
@@ -231,6 +345,7 @@ function resetScene() {
     addTexts();
     createGrid();
     createMiddleLine();
+    createSurroundingGrid();
     render();
 }
 
@@ -246,11 +361,12 @@ function init() {
     createLight();
     createRenderer();
     createGrid();
+    createSurroundingGrid();
     createMiddleLine();
+    addListener();
     addTexts();
     updateTexts();
     addControls();
-    addListener();
 
     window.addEventListener('resize', onWindowResize);
     render();
@@ -258,13 +374,39 @@ function init() {
 
 function addListener() {
 
-    document.getElementById("Farbsystem").addEventListener("change", function() { changeSelectText(); });
+    document.getElementById("Farbsystem").addEventListener("change", function() { changeSelectText(); setPreview(); });
     document.getElementById("submit_button").addEventListener("click", function() { setValues(); });
     document.getElementById("values_reset_button").addEventListener("click", resetValues);
     document.getElementById("scene_reset_button").addEventListener("click", resetScene);
+    document.getElementById("x_input").addEventListener("input", setPreview);
+    document.getElementById("y_input").addEventListener("input", setPreview);
+    document.getElementById("z_input").addEventListener("input", setPreview);
+    document.getElementById("emotionSwitch").addEventListener("change", toggleEmotions);    
 
 }
+function toggleEmotions() {
 
+    showEmotions = !showEmotions;
+
+    if (showEmotions == true) {
+
+        addTexts();
+
+    } else if (showEmotions == false) {
+        // textHappy, textContent, textCaredFor, textDespicable, textAngry, textSad, textSurprised, textSuspicious
+        scene.remove(scene.getObjectByName("textHappy"));
+        scene.remove(scene.getObjectByName("textContent"));
+        scene.remove(scene.getObjectByName("textCaredFor"));
+        scene.remove(scene.getObjectByName("textDespicable"));
+        scene.remove(scene.getObjectByName("textAngry"));
+        scene.remove(scene.getObjectByName("textSad"));
+        scene.remove(scene.getObjectByName("textSurprised"));
+        scene.remove(scene.getObjectByName("textSuspicious"));
+
+        render();
+
+    }
+}
 function resetValues() {
     document.getElementById("p_input").value = "";
     document.getElementById("a_input").value = "";
@@ -272,6 +414,8 @@ function resetValues() {
     document.getElementById("x_input").value = "";
     document.getElementById("y_input").value = "";
     document.getElementById("z_input").value = "";
+
+    document.getElementById("Farbsystem").style = "width:8em;background-color: 5c636a";
 }
 function setValues() {
     let selectedFarbsystem = farbsystem_element.options[farbsystem_element.selectedIndex].value;
@@ -282,39 +426,58 @@ function setValues() {
     let p_element_value = document.getElementById("p_input").value;
     let a_element_value = document.getElementById("a_input").value;
     let d_element_value = document.getElementById("d_input").value;
+    p = p_element_value
+    a = a_element_value
+    d = d_element_value;
+    // console.log("PAD: " + p,a,d);
     let element_values = [x_element_value, y_element_value, z_element_value, p_element_value, a_element_value, d_element_value];
     let pad_values = [p_element_value, a_element_value, d_element_value];
 
     function checkValuesEmpty(elements) {
         let i;
+
         for (i = 0; i < elements.length; i++) {
+            
             if (elements[i].length == 0) {
-                alert("Fehlende Eingabe(n)!");
+
+                alert("Fehlende Eingabe(n)!");                
                 return false;
+
             }
+
         }
+
         return true;
     }
 
     function checkPadValues(pad) {
         let i;
-        for (i = 0; i < pad.length; i++) {
-            if (!(-1 >= pad[i] <= 1)) {
-                alert("Falsche Eingabe: PAD-Werte müssen zwischen -1 und 1 liegen.");
+
+        for (i = 0; i <= pad.length; i++) {
+
+            if (parseFloat(pad[i]) < -1 || parseFloat(pad[i]) > 1 ) {
+
+                alert("Falsche Eingabe (" + pad[i] + "): PAD-Werte müssen zwischen -1 und 1 liegen.");
                 return false;
-            }
-            return true;
+
+            }      
+
         }
+
+        return true;
+
     }
+
 
     function checkValuesValid(values) {
         let i;
 
         if (selectedFarbsystem == "Cie-XYZ") {
+            /* values enthält auch die PAD-Werte, die dann dummerweise doppelt gecheckt werden,
+                deswegen muss hier die 3 hardgecodet werden. Nicht sonderlich elegant, läuft aber. */
+            for (i = 0; i < 3; i++) { 
 
-            for (i = 0; i < values.length; i++) {
-
-                if (parseFloat(values[i]) < -1.0 || parseFloat(values[i]) > 1.0) {
+                if (parseFloat(values[i]) < -100.0 || parseFloat(values[i]) > 100.0) {
 
                     alert("Fehlerhafte Eingabe (" + values[i] + "): XYZ-Werte müssen zwischen -1 und 1 liegen.");
                     return false;
@@ -327,7 +490,7 @@ function setValues() {
 
         } else if (selectedFarbsystem == "Cie-Lab") {
 
-            for (i = 0; i < values.length; i++) {
+            for (i = 0; i < 3; i++) {
 
                 if (parseFloat(values[i]) < -128.0 || parseFloat(values[i]) > 128.0) {
 
@@ -342,9 +505,9 @@ function setValues() {
 
         } else if (selectedFarbsystem == "RGB") {
 
-            for (i = 0; i < values.length; i++) {
+            for (i = 0; i < 3; i++) {
 
-                if (parseFloat(values[i]) < 0.0 || parseFloat(values[i]) > 255.0) {
+                if (parseFloat(values[i]) < 0 || parseFloat(values[i]) > 255) {
 
                     alert("Fehlerhafte Eingabe (" + values[i] + "): RGB-Werte müssen zwischen 0 und 255 liegen.");
                     return false;
@@ -377,10 +540,6 @@ function setValues() {
             let y = parseFloat(y_element_value);
             let z = parseFloat(z_element_value);
 
-            conf.p = p_element_value;
-            conf.a = a_element_value;
-            conf.d = d_element_value;
-
             let rgb = xyzToRgb([x, y, z]);
             let hex = rgbToHex(rgb);
             currentColor = hex;
@@ -394,9 +553,6 @@ function setValues() {
             let L = parseFloat(x_element_value);
             let a = parseFloat(y_element_value);
             let b = parseFloat(z_element_value);
-            conf.p = p_element_value;
-            conf.a = a_element_value;
-            conf.d = d_element_value;
 
             currentColor = rgbToHex(xyzToRgb(labToXyz([L, a, b])));
             addSphere();
@@ -407,9 +563,6 @@ function setValues() {
             let L = parseFloat(x_element_value);
             let c = parseFloat(y_element_value);
             let h = parseFloat(z_element_value);
-            conf.p = p_element_value;
-            conf.a = a_element_value;
-            conf.d = d_element_value;
 
             currentColor = rgbToHex(xyzToRgb(labToXyz(LchToLab([L, c, h]))));
             addSphere();
@@ -421,9 +574,6 @@ function setValues() {
             let L = parseFloat(x_element_value);
             let u = parseFloat(y_element_value);
             let v = parseFloat(z_element_value);
-            conf.p = p_element_value;
-            conf.a = a_element_value;
-            conf.d = d_element_value;
 
             currentColor = rgbToHex(xyzToRgb(LuvToXyz([L, u, v])));
             addSphere();
@@ -435,9 +585,6 @@ function setValues() {
             let R = parseFloat(x_element_value);
             let G = parseFloat(y_element_value);
             let B = parseFloat(z_element_value);
-            conf.p = p_element_value;
-            conf.a = a_element_value;
-            conf.d = d_element_value;
 
             currentColor = rgbToHex([R, G, B]);
             addSphere();
@@ -484,15 +631,76 @@ function changeSelectText() {
 
     };
 }
+/* Ändert die Farbvorschau */
+function setPreview() {
+    let selectedFarbsystem = farbsystem_element.options[farbsystem_element.selectedIndex].value;
+    let previewButton = document.getElementById("Farbsystem");
+
+    let x_element_value = document.getElementById("x_input").value;
+    let y_element_value = document.getElementById("y_input").value;
+    let z_element_value = document.getElementById("z_input").value;
+
+    if (selectedFarbsystem == "Cie-XYZ") {
+        console.log("Modus: XYZ");
+
+        // Umwandlung in Float, weil es sonst ein String wäre
+        let x = parseFloat(x_element_value);
+        let y = parseFloat(y_element_value);
+        let z = parseFloat(z_element_value);
+
+        let rgb = xyzToRgb([x, y, z]);
+        let hex = rgbToHex(rgb);
+
+        previewButton.style = "width:8em;background-color: " + hex;
+
+    } else if (selectedFarbsystem == "Cie-Lab") {
+        console.log("Modus: L*a*b*");
+
+        let L = parseFloat(x_element_value);
+        let a = parseFloat(y_element_value);
+        let b = parseFloat(z_element_value);
+
+        previewButton.style = "width:8em;background-color: " + rgbToHex(xyzToRgb(labToXyz([L, a, b])));
+
+    } else if (selectedFarbsystem == "Cie-Lch") {
+        console.log("Modus: LCh");
+        let L = parseFloat(x_element_value);
+        let c = parseFloat(y_element_value);
+        let h = parseFloat(z_element_value);
+
+        previewButton.style = "width:8em;background-color: " + rgbToHex(xyzToRgb(labToXyz(LchToLab([L, c, h]))));
+
+    } else if (selectedFarbsystem == "Cie-Luv") {
+        //TODO
+        console.log("Modus: L*u*v*");
+
+        let L = parseFloat(x_element_value);
+        let u = parseFloat(y_element_value);
+        let v = parseFloat(z_element_value);
+
+        previewButton.style = "width: 8em; background-color: " + rgbToHex(xyzToRgb(LuvToXyz([L, u, v])));
+
+    } else if (selectedFarbsystem == "RGB") {
+        console.log("Modus: RGB");
+
+        let R = parseFloat(x_element_value);
+        let G = parseFloat(y_element_value);
+        let B = parseFloat(z_element_value);
+
+        previewButton.style = "width:8em;background-color: " + rgbToHex([R, G, B]);
+
+    }
+
+    
+}
+
 /** https://en.wikipedia.org/wiki/SRGB#The_sRGB_transfer_function_.28.22gamma.22.29
  *  Umwandlung von XYZ nach RGB, skaliert mit 255
  */
 function xyzToRgb(xyz) {
-    const x = xyz[0];
-    const y = xyz[1];
-    const z = xyz[2];
-
-    console.log("XYZ: " + x, y, z);
+    const x = xyz[0] / 100;
+    const y = xyz[1] / 100;
+    const z = xyz[2] / 100;
 
     // https://wikimedia.org/api/rest_v1/media/math/render/svg/55840a61bb3e5b31469856346b5f66ce607fd9e3
     let R = 3.2406 * x - 1.5372 * y - 0.4986 * z;
@@ -548,9 +756,9 @@ function labToXyz(lab) {
     const L = lab[0];
     const a = lab[1];
     const b = lab[2];
-    const Xn = 94.811;
+    const Xn = 95.0489;
     const Yn = 100;
-    const Zn = 107.304;
+    const Zn = 108.884;
     const delta = 6 / 29;
 
     console.log("LAB: " + L, a, b);
@@ -567,8 +775,7 @@ function labToXyz(lab) {
 
     console.log("XYZ: " + X, Y, Z);
 
-    // xyzToRgb() erwartet Werte zwischen 0 und 1, daher durch 100 dividiert
-    return [X / 100, Y / 100, Z / 100];
+    return [X, Y, Z];
 }
 
 function LuvToXyz(Luv) {
@@ -598,8 +805,7 @@ function LuvToXyz(Luv) {
 
     // console.log("XYZ in LUV(): " + Y,X,Z)
 
-    // xyzToRgb() erwartet Werte zwischen 0 und 1, daher durch 100 dividiert
-    return [X / 100, Y / 100, Z / 100];
+    return [X, Y, Z];
 }
 
 function LchToLab(Lch) {
