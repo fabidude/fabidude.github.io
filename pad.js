@@ -321,7 +321,7 @@ function updateTexts() {
 }
 
 function addSphere() {
-    const sphereGeometry = new THREE.SphereGeometry(2 / 3, 2 ** 6, 2 ** 6);
+    const sphereGeometry = new THREE.SphereGeometry(2 / 3, 2 ** 4, 2 ** 4);
     const spehereMaterial = new THREE.MeshBasicMaterial({ color: currentColor });
     const newSphere = new THREE.Mesh(sphereGeometry, spehereMaterial);
     sphere = newSphere;
@@ -479,7 +479,7 @@ function setValues() {
 
                 if (parseFloat(values[i]) < -100.0 || parseFloat(values[i]) > 100.0) {
 
-                    alert("Fehlerhafte Eingabe (" + values[i] + "): XYZ-Werte müssen zwischen -1 und 1 liegen.");
+                    alert("Fehlerhafte Eingabe (" + values[i] + "): XYZ-Werte müssen zwischen -100 und 100 liegen.");
                     return false;
 
                 };
