@@ -477,9 +477,9 @@ function setValues() {
                 deswegen muss hier die 3 hardgecodet werden. Nicht sonderlich elegant, läuft aber. */
             for (i = 0; i < 3; i++) { 
 
-                if (parseFloat(values[i]) < -100.0 || parseFloat(values[i]) > 100.0) {
+                if (parseFloat(values[i]) < 0 || parseFloat(values[i]) > 100.0) {
 
-                    alert("Fehlerhafte Eingabe (" + values[i] + "): XYZ-Werte müssen zwischen -100 und 100 liegen.");
+                    alert("Fehlerhafte Eingabe (" + values[i] + "): XYZ-Werte müssen zwischen 0 und 100 liegen.");
                     return false;
 
                 };
